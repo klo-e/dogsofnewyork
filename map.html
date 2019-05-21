@@ -1,0 +1,124 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Dogs across New York City</title>
+  <meta name="description" content="Dogs">
+  <meta name="author" content="SitePoint">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
+ <!-- map to take up full screen -->
+  <style>
+      body { margin:0; padding:0; }
+      #map { position:absolute; top:0; bottom:0; width:100%; }
+</style>
+
+<style>
+
+.legend {
+background-color: #fff;
+border-radius: 3px;
+bottom: 30px;
+box-shadow: 0 1px 2px rgba(0,0,0,0.10);
+font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+padding: 10px;
+position: absolute;
+right: 10px;
+z-index: 1;
+}
+
+.legend h4 {
+margin: 0 0 10px;
+}
+
+.legend div span {
+border-radius: 50%;
+display: inline-block;
+height: 10px;
+margin-right: 5px;
+width: 10px;
+}
+
+</style>
+    <style>
+.mapboxgl-popup {
+max-width: 400px;
+font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+</style>
+  <link rel="stylesheet" href="map.css">
+
+</head>
+
+<body>
+  <div id='mapContainer'>
+    <div id="sidebar">
+    <div class="info-box" id="info-box-header">
+      <h3>Dogs of New York City</h3>
+      <!-- image source: https://www.freepik.com/free-vector/illustration-dogs-collection_2800615.htm-->
+      <img class="Dogs" img src="https://i.imgur.com/b4Jx9fR.png" title="source: imgur.com" width="270" height=auto></a><br><br>
+
+      <!-- Showing different tabs, source https://getbootstrap.com/docs/4.3/components/navs/-->
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="about-tab" data-toggle="tab" href="#about" role="tab" aria-controls="about" aria-selected="false">About</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">With 1.62 dog parks per 100,000 citizens, over 500 pet-friendly restaurants and bars, there is without a doubt that
+    New York is a dog friendly city. Some sources estimate that the dog population across five boroughs hover around 425,000 - even more than the human population of some countries! This web map pays tribute to the pooch
+    buddies that contribute to the identity of the city. </div>
+    <div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">Data is taken from NYC OpenData <a href= "https://data.cityofnewyork.us/Health/NYC-Dog-Licensing-Dataset/nu7n-tubp"> NYC Dog Licensing Dataset </a>.
+      All dogs residing in New York are required to be licensed, and the data reflects details such as ZipCode and Animal Breed and Gender of the Dogs. <br>
+      Details of the Community District was retrieved as GeoJson files from <a href="https://data.cityofnewyork.us/City-Government/Community-Districts/yfnk-k7r4"> NYC Community Districts from NYC OpenData. </a>
+    <br> Data is then merged and cleaned using Python. The Ipython notebook can be found on my Github.</div>
+    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">If you are interested in this project i can be found @kloe_ng!</div>
+  </div>
+
+
+
+
+</div>
+
+
+<div id='map'></div>
+
+<div id='state-legend' class='legend'>
+<h4>Dogs</h4>
+<div><span style='background-color: #f1eef6'></span>0</div>
+<div><span style='background-color: #dba7c0'></span>500</div>
+<div><span style='background-color: #f3e06e'></span>800</div>
+<div><span style='background-color: #add68c'></span>1000</div>
+<div><span style='background-color: #2b8cbe'></span>1500</div>
+</div>
+
+<div id='county-legend' class='legend' style='display: none;'>
+<h4>Dogs</h4>
+<div><span style='background-color: #f1eef6'></span>0</div>
+<div><span style='background-color: #dba7c0'></span>500</div>
+<div><span style='background-color: #f3e06e'></span>800</div>
+<div><span style='background-color: #add68c'></span>1000</div>
+<div><span style='background-color: #2b8cbe'></span>1500</div>
+</div>
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="js/dogrun.js"></script>
+  <script src="js/script.js"></script>
+
+</body>
+</html>
